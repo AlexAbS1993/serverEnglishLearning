@@ -1,7 +1,8 @@
 import { responseError } from '../../Types/generalTypes';
 import { loginInResponse, loginInType, userFromTokenType, getLoginResponseType, statisticSearchType } from './types/userServiceTypes';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import bounded from '../../database/relations'
+import { errorDecoder } from 'src/functions/errorDecoder';
 const config = require('config')
 const jwt = require('jsonwebtoken')
 const {User, Statistic} = bounded
@@ -18,16 +19,30 @@ export class UserService {
     const users:userType[] = await User.findAll()
     return users;
   }
-  async postUser(data:any): Promise<string>{
-    let newuser = await User.create({login: data.login, password: data.password})
-    if (data.statistic){
-      await Statistic.create({userId: newuser.id, ...data.statistic})
+  async postUser(data:any): Promise<{message: string}>{
+    let newuser
+    try{
+      newuser = await User.create({login: data.login, password: data.password})}
+    catch(e){
+        throw new HttpException(errorDecoder(e.message), HttpStatus.BAD_REQUEST) 
+      }
+      try {
+        if (data.statistic){
+          await Statistic.create({userId: newuser.id, ...data.statistic})
+        }
+        else {
+          await Statistic.create({userId: newuser.id})
+        }
+      }
+      catch(e){
+        throw new HttpException(e.message, HttpStatus.BAD_REQUEST) 
+      }
+      return {
+        message: "Успешно создан"
+      }
+    
+      
     }
-    else {
-      await Statistic.create({userId: newuser.id})
-    }
-    return "Success"
-  } 
 
   async loginIn(data:loginInType): Promise<loginInResponse|responseError>{
     try{

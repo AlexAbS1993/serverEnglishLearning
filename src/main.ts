@@ -7,7 +7,11 @@ const passport = require('passport')
 const hardsync = false
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: "http://localhost:3000" 
+    }
+  });
   app.use(passport.initialize())
   await passportUseFunction(passport)
   try{

@@ -15,7 +15,7 @@ export class UserModule implements NestModule{
     configure(consumer: MiddlewareConsumer){
         consumer
         .apply(passport.authenticate("jwt", {session: false}))
-        .exclude("auth/getUsers", "auth/registration", "auth/loginIn")
-        .forRoutes("auth")
+        .exclude("auth/getUsers", "auth/registration", "auth/isLogin")
+        // .forRoutes("auth")
     }
 }
