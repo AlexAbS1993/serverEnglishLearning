@@ -21,10 +21,14 @@ export class UserService {
   }
   async postUser(data:any): Promise<{message: string}>{
     let newuser
+    let candidate = await User.findOne({where: {login: data.login}})
+    if (candidate){
+      throw new HttpException(errorDecoder("Уже существует", "validation"), HttpStatus.BAD_REQUEST)
+    }
     try{
       newuser = await User.create({login: data.login, password: data.password})}
     catch(e){
-        throw new HttpException(errorDecoder(e.message), HttpStatus.BAD_REQUEST) 
+        throw new HttpException(errorDecoder(e.message, "validation"), HttpStatus.BAD_REQUEST) 
       }
       try {
         if (data.statistic){
@@ -35,10 +39,10 @@ export class UserService {
         }
       }
       catch(e){
-        throw new HttpException(e.message, HttpStatus.BAD_REQUEST) 
+        throw new HttpException(errorDecoder(e.message, "statistic"), HttpStatus.BAD_REQUEST) 
       }
       return {
-        message: "Успешно создан"
+        message: "Пользователь зарегистрирован. Войдите на сайт"
       }
     
       
@@ -55,17 +59,18 @@ export class UserService {
     }
     const statistic = await Statistic.findOne({where: {userId: candidate.id}})
     const token = await jwt.sign({id: candidate.id, login: candidate.login}, config.get("secretkey"))
+    console.log(data)
     return {
+        message: "Вход выполнен",
         login: data.login,
-        isRemember: data.isRemember || false,
+        isRemember: data.rememberMe || false,
+        id: candidate.id,
         statistic,
         token: `Bearer ${token}`
     }
     }
     catch(e){
-        return {
-            error: e.message
-        }
+      throw new HttpException(errorDecoder(e.message, "loginisation"), HttpStatus.BAD_REQUEST)
     }
   }
   async isLogin(user:userFromTokenType):Promise<getLoginResponseType|responseError> {
@@ -78,13 +83,12 @@ export class UserService {
       return({
         login: candidate.login,
         id: candidate.id,
+        message: "Добро пожаловать",
         statistic
       })
     }
     catch(e){
-      return {
-        error: e.message
-    }
+      throw new HttpException(errorDecoder(e.message, "loginisation"), HttpStatus.BAD_REQUEST)
     }
   }
 }

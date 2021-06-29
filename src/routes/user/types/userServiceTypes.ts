@@ -1,7 +1,7 @@
 export type loginInType = {
     login: string,
     password: string,
-    isRemember: boolean
+    rememberMe: boolean
 }
 
 export type statisticResponseType = {
@@ -16,8 +16,8 @@ export type statisticSearchType ={
 
 
 
-export type loginInResponse = Omit<loginInType, "password">&statisticResponseType&{token: string}
-export type getLoginResponseType = Omit<loginInType, "password"|"isRemember">&statisticResponseType&{id: number}
+export type loginInResponse = Omit<loginInType, "password"|"rememberMe">&statisticResponseType&{token: string, id: number, message: string, isRemember: boolean}
+export type getLoginResponseType = Omit<loginInType, "password"|"rememberMe">&statisticResponseType&{id: number, message: string}
 
 export type userFromTokenType = {
     login: string,

@@ -26,4 +26,24 @@ const User = sequelize.define("users", {
     timestamps: false
 })
 
+export const validationSchema = {
+    login: {
+        len: {value: [4, 16],
+            message: "Длина логина должна быть от 4 до 16 символов"
+        },
+        is: {
+            value: ["^[a-zA-Z]+$", "ig"],
+            type: "regexp",
+            message: "Логин должен состоять только из строчных и прописных английских символов"
+        }
+    },
+    password: {
+        len: {
+            value: [4, 16],
+            message: "Длина пароля должна быть от 4 до 16 символов"
+        }
+        
+    }
+}
+
 export default User
