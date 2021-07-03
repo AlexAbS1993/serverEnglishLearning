@@ -16,8 +16,8 @@ export type statisticSearchType ={
 
 
 
-export type loginInResponse = Omit<loginInType, "password"|"rememberMe">&statisticResponseType&{token: string, id: number, message: string, isRemember: boolean}
-export type getLoginResponseType = Omit<loginInType, "password"|"rememberMe">&statisticResponseType&{id: number, message: string}
+export type loginInResponse = Omit<loginInType, "password"|"rememberMe">&statisticResponseType&{token: string, id: number, message: string, isRemember: boolean, role: "user"|"admin"}
+export type getLoginResponseType = Omit<loginInType, "password"|"rememberMe">&statisticResponseType&{id: number, message: string, role: "user"|"admin"}
 
 export type userFromTokenType = {
     login: string,

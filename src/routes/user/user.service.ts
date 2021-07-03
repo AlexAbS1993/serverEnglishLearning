@@ -10,7 +10,8 @@ const {User, Statistic} = bounded
 export type userType = {
   login: string, 
   password: string, 
-  id: number
+  id: number,
+  role: "admin"|"user"
 }
 
 @Injectable()
@@ -64,6 +65,7 @@ export class UserService {
         message: "Вход выполнен",
         login: data.login,
         isRemember: data.rememberMe || false,
+        role: candidate.role,
         id: candidate.id,
         statistic,
         token: `Bearer ${token}`
@@ -84,6 +86,7 @@ export class UserService {
         login: candidate.login,
         id: candidate.id,
         message: "Добро пожаловать",
+        role: candidate.role,
         statistic
       })
     }

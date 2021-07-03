@@ -1,5 +1,6 @@
 const {DataTypes} = require('sequelize') 
-import sequelize from '../connection'
+import sequelize  from '../connection'
+
 
 const User = sequelize.define("users", {
     login: {
@@ -21,6 +22,11 @@ const User = sequelize.define("users", {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "user"
     }
 }, {
     timestamps: false

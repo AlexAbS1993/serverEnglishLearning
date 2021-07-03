@@ -1,4 +1,4 @@
-type errorDecoderTypes = "loginisation" | "statistic" | "validation"
+type errorDecoderTypes = "loginisation" | "statistic" | "validation"|"words"
 
 export const errorDecoder = (err: string, type: errorDecoderTypes):string => {
     switch(type){
@@ -19,6 +19,14 @@ export const errorDecoder = (err: string, type: errorDecoderTypes):string => {
             }
             if (err.match(/Такого пользователя нет/)){
                 return "Такого пользователя нет"
+            }
+        }
+        case "words": {
+            if (err.match(/Невозможно создать слов/)){
+                return "Невозможно создать слово"
+            }
+            if (err.match(/Эта запись не принадлежит данному пользователю/)){
+                return "Эта запись не принадлежит данному пользователю"
             }
         }
     }
