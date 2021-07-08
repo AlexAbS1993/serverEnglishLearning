@@ -1,6 +1,7 @@
 import { HttpException, Injectable, HttpStatus } from "@nestjs/common";
 import User from "src/database/models/user.model";
 import Word from "src/database/models/word.model";
+import userWord from 'src/database/models/userWordThrough'
 import { errorDecoder } from "src/functions/errorDecoder";
 import { wordBodyObject } from "./Types/words.service.types";
 
@@ -8,21 +9,29 @@ import { wordBodyObject } from "./Types/words.service.types";
 @Injectable()
 export class WordService{
     async AddNewWordToDictionary(body: wordBodyObject, user: any){
+        let candidate
+        let newWord
         try {
-            let candidate = await User.findOne({where: {id: user.id}})
-            let newWord =  await Word.create({
+            candidate = await User.findOne({where: {id: user.id}})
+            newWord =  await Word.create({
                 value: body.value,
                 engDiscription: body.engDiscription,
                 ruTranslate: body.ruTranslate,
-                imgSrc: body.imgSrc
-            })
-            await candidate.addWord(newWord)
-            await candidate.save()
-            return {
-                message: "Слово добавлено в словарь"
+                imgSrc: body.imgSrc,
+                cathegories: body.cathegories,
+                awareness: body.awareness ? body.awareness : 0
+            })}
+            catch(e){
+                throw new HttpException(errorDecoder(e.message, "validation"), HttpStatus.BAD_REQUEST)
             }
-        }
-        catch(e){
+            try{
+                await candidate.addWord(newWord)
+                await candidate.save()
+                return {
+                    message: "Слово добавлено в словарь"
+                }
+            }
+            catch(e){
             throw new HttpException(errorDecoder("Невозможно создать слово", "words"), HttpStatus.BAD_REQUEST)
         }
     }
@@ -31,7 +40,9 @@ export class WordService{
             const candidate = await User.findOne({where: {id: user.id}, include: [Word]})
             return {
                 message: "Слова получены",
-                candidate
+                words: [
+                    ...candidate.words
+                ]
             }
         }
         catch(e){
@@ -74,5 +85,30 @@ export class WordService{
             message: "Данные о количестве слов получены",
             count
         }
+    }
+    async getCountWords(count: number, userId){
+        try{
+            let generalCount: number = await userWord.count({where: {userId: userId}})
+            if (generalCount < count){
+                return {
+                    message: "Слова получены",
+                    words: [
+                        ...await userWord.findAll({where: {userId: userId}, include: [Word]})
+                    ]
+                }
+            }
+            let offset = generalCount - count
+            let words = await userWord.findAll({where: {userId: userId}, offset: offset, count: count, include: [Word]})
+            return {
+                message: "Слова получены",
+                words: [
+                    ...words
+                ]
+            }
+        }
+        catch(e){
+            throw new HttpException(errorDecoder(e.message, "words"), HttpStatus.BAD_REQUEST)
+        }
+       
     }
 }

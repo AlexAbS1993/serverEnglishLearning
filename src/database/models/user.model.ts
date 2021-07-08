@@ -1,5 +1,6 @@
 const {DataTypes} = require('sequelize') 
 import sequelize  from '../connection'
+import { validationType } from './Types/validation.types'
 
 
 const User = sequelize.define("users", {
@@ -32,7 +33,7 @@ const User = sequelize.define("users", {
     timestamps: false
 })
 
-export const validationSchema = {
+export const validationSchema:validationType = {
     login: {
         len: {value: [4, 16],
             message: "Длина логина должна быть от 4 до 16 символов"

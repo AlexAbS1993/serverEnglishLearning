@@ -9,4 +9,8 @@ export class ValidateController{
     registrationValid(){
         return this.validateService.registrationValidation()
     }
+    @Get("newWord")
+    newWord(){
+        return this.validateService.newWordValidation()
+    }
 }

@@ -22,4 +22,8 @@ export class WordController{
     deleteWord(@Param('id') id: string, @Req() request: any){
         return this.WordService.deleteWord(Number(id), request.user.id)
     }
+    @Get("count/:count")
+    getCountOfWords(@Param("count") count: string, @Req() request: any){
+        return this.WordService.getCountWords(Number(count), request.user.id)
+    }
 }

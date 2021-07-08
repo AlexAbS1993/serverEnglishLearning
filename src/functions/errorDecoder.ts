@@ -1,3 +1,5 @@
+import console from "console"
+
 type errorDecoderTypes = "loginisation" | "statistic" | "validation"|"words"
 
 export const errorDecoder = (err: string, type: errorDecoderTypes):string => {
@@ -8,6 +10,15 @@ export const errorDecoder = (err: string, type: errorDecoderTypes):string => {
             }
             if (err.match(/Уже существует/)){
                 return "Такой пользователь уже существует"
+            }
+            if (err.match(/ruTranslate cannot be null/gi)){
+                return "Значение перевода не может быть пустым"
+            }
+            if (err.match(/imgSrc cannot be null/)){
+                return "Ссылка на картинку обязательна"
+            }
+            if (err.match(/cathegories cannot be null/)){
+                return "Категория не может быть пустой"
             }
         }
         case "loginisation": {           

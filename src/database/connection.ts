@@ -1,9 +1,9 @@
-export const hardsync = true
+export const testDataBase = true
 
 const {Sequelize} = require("sequelize") 
 
  const sequelize = (() => {
-     if (hardsync){
+     if (testDataBase){
          return (() => {
             return new Sequelize("englishlearntest", "postgres", "04051993", {
             host: "localhost",

@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { validationSchema } from "src/database/models/user.model";
+import { wordValidation } from "src/database/models/word.model";
 
 
 
@@ -9,5 +10,11 @@ export class ValidateService{
         return {
             message: "Схема валидации получена",
             schema: validationSchema}
+    }
+    newWordValidation(){
+        return {
+            message: "Схема валидации получена",
+            schema: wordValidation
+        }
     }
 }
