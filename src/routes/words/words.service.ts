@@ -1,10 +1,9 @@
 import { HttpException, Injectable, HttpStatus } from "@nestjs/common";
-import User from "src/database/models/user.model";
-import Word from "src/database/models/word.model";
-import userWord from 'src/database/models/userWordThrough'
+import models from '../../database/relations'
 import { errorDecoder } from "src/functions/errorDecoder";
 import { wordBodyObject } from "./Types/words.service.types";
-
+import { Op } from "sequelize";
+const {User, Word, userWord} = models
 
 @Injectable()
 export class WordService{
@@ -12,6 +11,7 @@ export class WordService{
         let candidate
         let newWord
         try {
+            console.log(body)
             candidate = await User.findOne({where: {id: user.id}})
             newWord =  await Word.create({
                 value: body.value,
@@ -110,5 +110,26 @@ export class WordService{
             throw new HttpException(errorDecoder(e.message, "words"), HttpStatus.BAD_REQUEST)
         }
        
+    }
+    async getGeneralCountOfWords(userId){
+        let result = await userWord.count({where: {userId: userId}})
+        return {
+            message: "Количество слов получено",
+            count: result
+        }
+    }
+    async getSuitableWords(userId, fragment:string){
+        let result = await userWord.findAll({where: {userId: userId}, include: {
+            model: Word,
+            where: {
+                    value: {
+                        [Op.iRegexp]: `^${fragment}`
+                    }
+                }      
+        }})
+        return {
+            message: "Слова получены",
+            words: result
+        }
     }
 }

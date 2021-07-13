@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res, Req, Delete, Param } from "@nestjs/common";
+import { Body, Controller, Get, Post, Res, Req, Delete, Param, Query } from "@nestjs/common";
 import { wordBodyObject } from "./Types/words.service.types";
 import { WordService } from "./words.service";
 
@@ -25,5 +25,14 @@ export class WordController{
     @Get("count/:count")
     getCountOfWords(@Param("count") count: string, @Req() request: any){
         return this.WordService.getCountWords(Number(count), request.user.id)
+    }
+    @Get("count")
+    getGeneralCount(@Req() request: any){
+        return this.WordService.getGeneralCountOfWords(request.user.id)
+    }
+    @Get("getForFragment")
+    getForFragment(@Req() request: any, @Query("fragment") fragment: string){
+        console.log(fragment)
+        return this.WordService.getSuitableWords(request.user.id, fragment)
     }
 }

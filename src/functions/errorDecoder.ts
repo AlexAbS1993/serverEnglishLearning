@@ -20,6 +20,9 @@ export const errorDecoder = (err: string, type: errorDecoderTypes):string => {
             if (err.match(/cathegories cannot be null/)){
                 return "Категория не может быть пустой"
             }
+            if (err.match(/Validation is on \w+ failed/)){
+                return "Поля должны быть заполнены корректно"
+            }
         }
         case "loginisation": {           
             if (err.match(/Такого пользователя не существует/)){

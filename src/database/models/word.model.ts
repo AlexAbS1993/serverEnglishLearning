@@ -11,37 +11,37 @@ const Word = sequelize.define("word", {
     value: {
         type: DataTypes.STRING,
         allowNull: false,
-        validation: {
-            is: /^[a-zA-Z]+$/ig,
-            len: [1, 64]
+        validate: {
+            is: /^[a-zA-Z\s]+$/ig,
+            len: [2, 64]
         }
     },
     engDiscription: {
         type: DataTypes.STRING,
         allowNull: false,
-        validation: {
-            is: /^[a-zA-Z]+$/ig,
+        validate: {
+            is: /^[a-zA-Z\s]+$/ig,
             len: [1, 128]
         }
     },
     ruTranslate: {
         type: DataTypes.STRING,
         allowNull: false,
-        validation: {
-            is: /^[а-яА-ЯЁё]+$/ig,
+        validate: {
+            is: /^[а-яА-ЯЁё\s]+$/ig,
             len: [1, 64]
         }
     },
     imgSrc: {
         type: DataTypes.STRING,
         allowNull: false,
-        validation: {
+        validate: {
             isUrl: true,
         }
     },
     awareness: {
         type: DataTypes.INTEGER,
-        validation: {
+        validate: {
             min: 0,
             max: 3
         },
@@ -50,7 +50,7 @@ const Word = sequelize.define("word", {
     cathegories: {
         type: DataTypes.STRING,
         allowNull: false,
-        validation: {
+        validate: {
             len: [1, 28]
         }
     }
@@ -93,7 +93,7 @@ export const wordValidation:validationType = {
     },
     imgSrc: {
         isUrl: {
-            value: ["^https?:\/\/\S+(?:jpg|jpeg|png)$", "ig"],
+            value: ["^https?:\\/\\/\\S+\\.(?:jpg|jpeg|png)$", "ig"],
             type: "regexp",
             message: "Необходима ссылка"
         }
